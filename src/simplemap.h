@@ -20,24 +20,28 @@ class simplemap_t {
 
     // Define the two vectors of types K and V
 	// << use std::vector<K> >>
-
-
-  public:
+    private:
+        std::vector<K>* keys;
+        std::vector<V>* values;
+    public:
 
     // The constructor should just initialize the vectors to be empty
-    simplemap_t() {
-        assert("Not Implemented");
-    }
+        simplemap_t() {
+            keys = new std::vector<K>();
+            values = new std::vector<V>();
+        }
 
 
-    // Insert (key, val) if and only if the key is not currently present in
-    // the map.  Returns true on success, false if the key was
-    // already present.
-    bool insert(K key, V val) {
+        // Insert (key, val) if and only if the key is not currently present in
+        // the map.  Returns true on success, false if the key was
+        // already present.
+        bool insert(K key, V val) {
+            for (auto it = keys->begin(); it != keys->end(); ++it)
+                if (*it == key) return false;
 
-    	assert("Not Implemented");
-    	return true;
-
+            keys->push_back(key);
+            values->push_back(val);
+            return true;
     	// The following is just an example of using C++11 features,
     	// like the 'auto' type and lambda expression
     	/*
@@ -51,21 +55,31 @@ class simplemap_t {
         values->push_back(val);
 		*/
 
-
     }
 
     // If key is present in the data structure, replace its value with val
     // and return true; if key is not present in the data structure, return
     // false.
     bool update(K key, V val) {
-        assert("Not Implemented");
+        for (auto it = keys->begin(); it != keys->end(); ++it){
+            if (*it == key){
+                values->at(*it) = val;
+                return true;
+            }
+        }
         return false;
     }
 
     // Remove the (key, val) pair if it is present in the data structure.
     // Returns true on success, false if the key was not already present.
     bool remove(K key) {
-        assert("Not Implemented");
+        for (auto it1 = keys->begin(), it2 = values->begin(); it1 != keys->end(), it2 != values->end(); ++it1, ++it2){
+            if (*it1 == key){
+                keys->erase(it1);
+                values->erase(it2);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -75,7 +89,11 @@ class simplemap_t {
     // Be careful not to share the memory of the map with application threads, you might
     // get unexpected race conditions
     std::pair<V, bool> lookup(K key) {
-        assert("Not Implemented");
+        for (auto it = keys->begin(); it != keys->end(); ++it){
+            if (*it == key){
+                return std::make_pair(values->at(*it), true);
+            }
+        }
         //TO DO: the following is a default return value, do not use it!
         return std::make_pair(0, false);
     }
